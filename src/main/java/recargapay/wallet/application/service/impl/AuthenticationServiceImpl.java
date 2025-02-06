@@ -8,7 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-import recargapay.wallet.application.dto.request.AuthenticationRequest;
+import recargapay.wallet.application.dto.request.AuthenticationRequestDTO;
 import recargapay.wallet.application.dto.response.AuthenticationResponseDTO;
 import recargapay.wallet.application.service.AuthenticationService;
 import recargapay.wallet.infra.security.JwtCacheService;
@@ -37,12 +37,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public ResponseEntity<AuthenticationResponseDTO> createAuthenticationToken(AuthenticationRequest authenticationRequest) {
+    public ResponseEntity<AuthenticationResponseDTO> createAuthenticationToken(AuthenticationRequestDTO authenticationRequestDTO) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authenticationRequest.username(), authenticationRequest.password())
+                new UsernamePasswordAuthenticationToken(authenticationRequestDTO.username(), authenticationRequestDTO.password())
         );
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.username());
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequestDTO.username());
         final String jwt = jwtUtil.generateToken(userDetails.getUsername());
 
         jwtCacheService.cacheJwt(userDetails.getUsername(), jwt);

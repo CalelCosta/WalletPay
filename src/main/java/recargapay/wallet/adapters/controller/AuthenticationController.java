@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import recargapay.wallet.application.dto.request.AuthenticationRequest;
+import recargapay.wallet.application.dto.request.AuthenticationRequestDTO;
 import recargapay.wallet.application.dto.response.AuthenticationResponseDTO;
 import recargapay.wallet.application.service.AuthenticationService;
 import recargapay.wallet.application.service.impl.AuthenticationServiceImpl;
@@ -27,8 +27,8 @@ public class AuthenticationController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponseDTO> createAuthenticationToken(
-            @RequestBody AuthenticationRequest authenticationRequest) {
+            @RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
         log.info("Creating authentication token");
-        return authenticationService.createAuthenticationToken(authenticationRequest);
+        return authenticationService.createAuthenticationToken(authenticationRequestDTO);
     }
 }
