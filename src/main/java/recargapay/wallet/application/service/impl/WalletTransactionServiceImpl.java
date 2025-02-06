@@ -1,24 +1,24 @@
 package recargapay.wallet.application.service.impl;
 
 import org.springframework.http.ResponseEntity;
-import recargapay.wallet.application.dto.response.DepositResponse;
-import recargapay.wallet.application.dto.response.TransferResponse;
-import recargapay.wallet.application.dto.response.WithdrawResponse;
+import recargapay.wallet.application.dto.response.DepositResponseDTO;
+import recargapay.wallet.application.dto.response.TransferResponseDTO;
+import recargapay.wallet.application.dto.response.WithdrawResponseDTO;
 import recargapay.wallet.application.service.WalletTransactionService;
 
 public class WalletTransactionServiceImpl implements WalletTransactionService {
     @Override
-    public ResponseEntity<DepositResponse> deposit() {
+    public ResponseEntity<DepositResponseDTO> deposit() {
         return null;
     }
 
     @Override
-    public ResponseEntity<WithdrawResponse> withdraw() {
+    public ResponseEntity<WithdrawResponseDTO> withdraw() {
         return null;
     }
 
     @Override
-    public ResponseEntity<TransferResponse> transfer() {
+    public ResponseEntity<TransferResponseDTO> transfer() {
         return null;
     }
 }

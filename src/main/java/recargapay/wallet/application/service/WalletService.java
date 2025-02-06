@@ -5,7 +5,7 @@ import recargapay.wallet.application.dto.response.*;
 
 public interface WalletService {
 
-    ResponseEntity<WalletResponse> createWallet();
-    ResponseEntity<BalanceResponse> getBalance();
+    ResponseEntity<WalletResponseDTO> createWallet();
+    ResponseEntity<BalanceResponseDTO> getBalance();
 
 }

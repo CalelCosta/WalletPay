@@ -10,18 +10,6 @@ services:
     ports:
       - '5432'
 
-  wallet-service:
-    build: .
-    container_name: wallet_service
-    depends_on:
-      - postgres
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/wallet_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-    ports:
-      - "8080"
-
   redis:
     image: 'redis:latest'
     container_name: redis-cache-pay

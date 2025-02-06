@@ -1,6 +1,7 @@
 package recargapay.wallet.application.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +26,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final UserDetailsService userDetailsService;
 
+    @Value("${jwt.expiration}")
+    private Long expiration;
+
     public AuthenticationServiceImpl(AuthenticationManager authenticationManager, JwtUtil jwtUtil, JwtCacheService jwtCacheService, UserDetailsService userDetailsService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
@@ -45,6 +49,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         log.info("JWT generated");
 
-        return ResponseEntity.ok(new AuthenticationResponseDTO("Bearer " + jwt));
+        return ResponseEntity.ok(new AuthenticationResponseDTO(jwt, "Bearer", expiration.intValue()));
     }
 }

@@ -1,4 +1,4 @@
 package recargapay.wallet.application.dto.response;
 
-public record WalletResponse(String message) {
+public record WalletResponseDTO(String message) {
 }

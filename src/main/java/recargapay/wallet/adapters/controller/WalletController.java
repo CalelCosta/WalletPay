@@ -8,6 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import recargapay.wallet.application.dto.response.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @OpenAPIDefinition(
         info = @Info(title = "Wallet Service API", version = "1.0", description = "API for digital wallet management")
 )
@@ -16,27 +19,29 @@ import recargapay.wallet.application.dto.response.*;
 public class WalletController {
 
     @PostMapping
-    public ResponseEntity<WalletResponse> createWallet() {
+    public ResponseEntity<WalletResponseDTO> createWallet() {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/{userId}/balance")
-    public ResponseEntity<BalanceResponse> getBalance(Pageable pageable, @PathVariable Long userId, @RequestParam String date) {
+    public ResponseEntity<BalanceResponseDTO> getBalance(Pageable pageable,
+                                                         @PathVariable Long userId,
+                                                         @RequestParam(name = "date", required = false) String date) {
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{userId}/deposit")
-    public ResponseEntity<DepositResponse> createDeposit(@PathVariable Long userId) {
+    public ResponseEntity<DepositResponseDTO> createDeposit(@PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/{userId}/withdraw")
-    public ResponseEntity<WithdrawResponse> withdrawMoney(@PathVariable Long userId) {
+    public ResponseEntity<WithdrawResponseDTO> withdrawMoney(@PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/{fromId}/transfer/{toId}")
-    public ResponseEntity<TransferResponse> transferMoney(@PathVariable Long fromId, @PathVariable Long toId) {
+    public ResponseEntity<TransferResponseDTO> transferMoney(@PathVariable Long fromId, @PathVariable Long toId) {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
