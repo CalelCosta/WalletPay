@@ -1,6 +1,7 @@
 package recargapay.wallet.infra.model;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @ToString
 @AllArgsConstructor
+@Transactional
 @Builder
 @Table(name = "users")
 public class User implements Serializable {
@@ -28,6 +30,9 @@ public class User implements Serializable {
     @Column(name = "password_hash")
     private String password;
 
+    @Column(name = "cpf", unique = true, length = 14)
+    private String cpf;
+
     @Column
     private String email;
 
@@ -41,4 +46,14 @@ public class User implements Serializable {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

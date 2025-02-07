@@ -14,7 +14,7 @@ import recargapay.wallet.application.service.AuthenticationService;
 import recargapay.wallet.infra.security.JwtCacheService;
 import recargapay.wallet.infra.security.JwtUtil;
 
-@Service
+@Service("authenticationService")
 @Slf4j
 public class AuthenticationServiceImpl implements AuthenticationService {
 
@@ -39,10 +39,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public ResponseEntity<AuthenticationResponseDTO> createAuthenticationToken(AuthenticationRequestDTO authenticationRequestDTO) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authenticationRequestDTO.username(), authenticationRequestDTO.password())
+                new UsernamePasswordAuthenticationToken(authenticationRequestDTO.getUsername(), authenticationRequestDTO.getPassword())
         );
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequestDTO.username());
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequestDTO.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails.getUsername());
 
         jwtCacheService.cacheJwt(userDetails.getUsername(), jwt);

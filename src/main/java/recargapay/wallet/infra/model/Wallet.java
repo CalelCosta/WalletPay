@@ -1,6 +1,7 @@
 package recargapay.wallet.infra.model;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @ToString
 @AllArgsConstructor
+@Transactional
 @Builder
 @Table(name = "wallets")
 public class Wallet {

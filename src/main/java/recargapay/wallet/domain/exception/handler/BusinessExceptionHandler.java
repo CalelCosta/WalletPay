@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import recargapay.wallet.application.dto.response.ErrorResponseDTO;
 import recargapay.wallet.domain.exception.BusinessException;
 import recargapay.wallet.domain.exception.NotFoundException;
+import recargapay.wallet.domain.exception.PersistenceException;
 
 @ControllerAdvice
 public class BusinessExceptionHandler {
@@ -21,6 +22,12 @@ public class BusinessExceptionHandler {
     public ResponseEntity<ErrorResponseDTO> handleNotFoundException(NotFoundException notFoundException) {
         ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(notFoundException.getMessage(), notFoundException.getCode());
         return new ResponseEntity<>(errorResponseDTO, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PersistenceException.class)
+    public ResponseEntity<ErrorResponseDTO> handlePersistenceException(PersistenceException persistenceException) {
+        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(persistenceException.getMessage(), persistenceException.getCode());
+        return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
     }
 
 }

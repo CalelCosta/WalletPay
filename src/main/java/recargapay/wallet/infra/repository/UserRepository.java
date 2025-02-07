@@ -4,11 +4,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import recargapay.wallet.infra.model.Wallet;
+import recargapay.wallet.infra.model.User;
 
 @Repository
-public interface WalletRepository extends JpaRepository<Wallet, Long> {
+public interface UserRepository extends JpaRepository<User, Integer> {
 
-    @Query(value = "select w from Wallet w where w.id = :id")
-    Wallet findWalletById(@Param("id") Long id);
+    @Query("select u from User u where u.cpf = :cpf")
+    User findByCpf(@Param("cpf") String cpf);
 }
