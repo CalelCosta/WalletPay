@@ -98,8 +98,4 @@ public class WalletServiceImpl implements WalletService {
     private PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    private String convertDateFormat(String date) {
-
-    }
 }

@@ -22,7 +22,7 @@ public class GetBalanceUseCaseImpl implements GetBalanceUseCase {
 
     private final WalletService walletService;
     private final UserRepository userRepository;
-    private static final String DATE_PATTERN = "^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(19[0-9]{2}|20[0-9]{2})$";
+    private static final String DATE_PATTERN = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$";
 
     public GetBalanceUseCaseImpl(WalletService walletService, UserRepository userRepository) {
         this.walletService = walletService;
