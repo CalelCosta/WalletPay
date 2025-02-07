@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import recargapay.wallet.application.dto.request.CreateWalletRequestDTO;
 import recargapay.wallet.application.dto.response.*;
 import recargapay.wallet.domain.usecase.CreateWalletUseCase;
+import recargapay.wallet.domain.usecase.GetBalanceUseCase;
 
 @OpenAPIDefinition(
         info = @Info(title = "Wallet Service API", version = "1.0", description = "API for digital wallet management")
@@ -24,9 +26,11 @@ import recargapay.wallet.domain.usecase.CreateWalletUseCase;
 public class WalletController {
 
     private final CreateWalletUseCase createWalletUseCase;
+    private final GetBalanceUseCase getBalanceUseCase;
 
-    public WalletController(CreateWalletUseCase createWalletUseCase) {
+    public WalletController(CreateWalletUseCase createWalletUseCase, GetBalanceUseCase getBalanceUseCase) {
         this.createWalletUseCase = createWalletUseCase;
+        this.getBalanceUseCase = getBalanceUseCase;
     }
 
     @Operation(summary = "Create a Wallet", description = "Endpoint for creating a new digital wallet for the user.")
@@ -44,10 +48,10 @@ public class WalletController {
     }
 
     @GetMapping("/{userId}/balance")
-    public ResponseEntity<BalanceResponseDTO> getBalance(Pageable pageable,
-                                                         @PathVariable Long userId,
-                                                         @RequestParam(name = "date", required = false) String date) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Page<BalanceResponseDTO>> getBalance(Pageable pageable,
+                                               @PathVariable Long userId,
+                                               @RequestParam(name = "date", required = false) String date) {
+        return ResponseEntity.ok(getBalanceUseCase.getBalance(pageable, userId, date));
     }
 
     @PostMapping("/{userId}/deposit")

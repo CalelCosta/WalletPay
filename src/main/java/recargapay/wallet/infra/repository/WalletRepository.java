@@ -6,6 +6,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import recargapay.wallet.infra.model.Wallet;
 
+import java.math.BigDecimal;
+
 @Repository
 public interface WalletRepository extends JpaRepository<Wallet, Long> {
 

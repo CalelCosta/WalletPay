@@ -1,5 +1,8 @@
 package recargapay.wallet.application.service.impl;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,9 @@ import recargapay.wallet.infra.repository.UserRepository;
 import recargapay.wallet.infra.repository.WalletRepository;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Stream;
 
 import static recargapay.wallet.domain.exception.ExceptionEnum.ERROR_PERSISTENCE;
 
@@ -33,8 +39,8 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     public WalletResponseDTO createWallet(CreateWalletRequestDTO createWalletRequestDTO, User user) throws PersistenceException {
-
-        return null;
+        Wallet newWallet = createWalletAndPersist(createWalletRequestDTO, user);
+        return walletMapper.toDto(newWallet.getUser(), newWallet);
     }
 
     @Override
@@ -45,8 +51,19 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public BalanceResponseDTO getBalance() {
-        return null;
+    public Page<BalanceResponseDTO> getBalanceWithFilter(Pageable pageable, Wallet wallet, String date) {
+        Stream<Wallet> walletStream = Stream.of(wallet)
+                .filter(walletDate -> walletDate.getCreatedAt().isAfter(LocalDate.parse(date)));
+        List<BalanceResponseDTO> balanceList = walletMapper.toListDto(walletStream.toList());
+        return new PageImpl<>(balanceList, pageable, balanceList.size());
+    }
+
+    @Override
+    public Page<BalanceResponseDTO> getAllBalanceWithCurrentDate(Pageable pageable, Wallet wallet, String date) {
+        Stream<Wallet> walletStream = Stream.of(wallet)
+                .filter(walletDate -> walletDate.getCreatedAt().isEqual(LocalDate.parse(date)));
+        List<BalanceResponseDTO> balanceList = walletMapper.toListDto(walletStream.toList());
+        return new PageImpl<>(balanceList, pageable, balanceList.size());
     }
 
     private User createUserPersistAndReturn(CreateWalletRequestDTO userRequestDTO) {
@@ -70,15 +87,19 @@ public class WalletServiceImpl implements WalletService {
                 .balance(BigDecimal.ZERO)
                 .currency(createWalletRequestDTO.getCurrency())
                 .build();
-        try {
-            walletRepository.saveAndFlush(newWallet);
-        } catch (RuntimeException e) {
-            throw new PersistenceException(ERROR_PERSISTENCE.getMessage(), ERROR_PERSISTENCE.getStatusCode());
-        }
+            try {
+                walletRepository.saveAndFlush(newWallet);
+            } catch (RuntimeException e) {
+                throw new PersistenceException(ERROR_PERSISTENCE.getMessage(), ERROR_PERSISTENCE.getStatusCode());
+            }
         return walletRepository.findWalletById(newWallet.getId());
     }
 
     private PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    private String convertDateFormat(String date) {
+
     }
 }
