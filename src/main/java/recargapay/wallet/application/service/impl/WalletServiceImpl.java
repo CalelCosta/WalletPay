@@ -53,7 +53,7 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public Page<BalanceResponseDTO> getBalanceWithFilter(Pageable pageable, Wallet wallet, String date) {
         Stream<Wallet> walletStream = Stream.of(wallet)
-                .filter(walletDate -> walletDate.getCreatedAt().isAfter(LocalDate.parse(date)));
+                .filter(walletDate -> walletDate.getCreatedAt().isBefore(LocalDate.parse(date)));
         List<BalanceResponseDTO> balanceList = walletMapper.toListDto(walletStream.toList());
         return new PageImpl<>(balanceList, pageable, balanceList.size());
     }
