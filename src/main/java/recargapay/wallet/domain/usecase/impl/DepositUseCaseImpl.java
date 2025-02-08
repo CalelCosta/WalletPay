@@ -33,7 +33,7 @@ public class DepositUseCaseImpl implements DepositUseCase {
     @Transactional
     public void execute(DepositRequestDTO depositRequestDTO) {
         verifyDepositAmount(depositRequestDTO);
-        Optional<Wallet> result = Optional.of(userRepository.findByCpf(depositRequestDTO.getCpf())).map(User::getWallet);
+        Optional<Wallet> result = Optional.ofNullable(userRepository.findByCpf(depositRequestDTO.getCpf())).map(User::getWallet);
         if (result.isEmpty()) {
             throw new BusinessException(NOT_FOUND.getMessage(), NOT_FOUND.getStatusCode());
         } else {

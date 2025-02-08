@@ -39,7 +39,7 @@ public class DepositServiceImpl implements DepositService {
     @Transactional
     public void handleDeposit(DepositRequestDTO eventDepositDTO) {
         log.info("Received deposit event: {}", eventDepositDTO);
-        Optional<Wallet> result = Optional.of(userRepository.findByCpf(eventDepositDTO.getCpf())).map(User::getWallet);
+        Optional<Wallet> result = Optional.ofNullable(userRepository.findByCpf(eventDepositDTO.getCpf())).map(User::getWallet);
         buildTransactionAndSave(eventDepositDTO, result.get());
         try {
             result.ifPresent(wallet -> wallet.setBalance(eventDepositDTO.getAmount()));

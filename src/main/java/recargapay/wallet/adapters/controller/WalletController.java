@@ -15,10 +15,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import recargapay.wallet.application.dto.request.CreateWalletRequestDTO;
 import recargapay.wallet.application.dto.request.DepositRequestDTO;
+import recargapay.wallet.application.dto.request.WithdrawRequestDTO;
 import recargapay.wallet.application.dto.response.*;
 import recargapay.wallet.domain.usecase.CreateWalletUseCase;
 import recargapay.wallet.domain.usecase.DepositUseCase;
 import recargapay.wallet.domain.usecase.GetBalanceUseCase;
+import recargapay.wallet.domain.usecase.WithdrawUseCase;
 
 @OpenAPIDefinition(
         info = @Info(title = "Wallet Service API", version = "1.0", description = "API for digital wallet management")
@@ -30,11 +32,13 @@ public class WalletController {
     private final CreateWalletUseCase createWalletUseCase;
     private final GetBalanceUseCase getBalanceUseCase;
     private final DepositUseCase depositUseCase;
+    private final WithdrawUseCase withdrawUseCase;
 
-    public WalletController(CreateWalletUseCase createWalletUseCase, GetBalanceUseCase getBalanceUseCase, DepositUseCase depositUseCase) {
+    public WalletController(CreateWalletUseCase createWalletUseCase, GetBalanceUseCase getBalanceUseCase, DepositUseCase depositUseCase, WithdrawUseCase withdrawUseCase) {
         this.createWalletUseCase = createWalletUseCase;
         this.getBalanceUseCase = getBalanceUseCase;
         this.depositUseCase = depositUseCase;
+        this.withdrawUseCase = withdrawUseCase;
     }
 
     @Operation(summary = "Create a Wallet", description = "Endpoint for creating a new digital wallet for the user.")
@@ -83,9 +87,19 @@ public class WalletController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
+    @Operation(summary = "Makes a Withdraw", description = "Endpoint for make a withdraw.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "OK",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = WithdrawRequestDTO.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid Input Data",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDTO.class)) })
+    })
     @PostMapping("/withdraw")
-    public ResponseEntity<WithdrawResponseDTO> withdrawMoney() {
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<WithdrawResponseDTO> withdrawMoney(@Valid @RequestBody WithdrawRequestDTO withdrawRequestDTO) {
+        withdrawUseCase.execute(withdrawRequestDTO);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @PostMapping("/transfer")
