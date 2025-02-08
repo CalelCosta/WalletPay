@@ -48,12 +48,18 @@ public class SecurityConfig {
                         .requestMatchers("/authenticate").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/swagger-ui/index.html"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .addFilterBefore(new JwtRequestFilter(jwtUtil, jwtCacheService, userDetailsService), UsernamePasswordAuthenticationFilter.class); // Adiciona o filtro JWT
+                .addFilterBefore(new JwtRequestFilter(jwtUtil, jwtCacheService, userDetailsService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

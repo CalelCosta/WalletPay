@@ -12,7 +12,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-
 import java.io.IOException;
 
 @Component
@@ -26,6 +25,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         this.jwtUtil = jwtUtil;
         this.jwtCacheService = jwtCacheService;
         this.userDetailsService = userDetailsService;
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getServletPath();
+        return path.startsWith("/v3/api-docs")
+                || path.startsWith("/swagger-ui")
+                || path.equals("/swagger-ui.html")
+                || path.equals("/swagger-ui/index.html");
     }
 
     @Override
@@ -48,8 +56,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             if (jwtUtil.validateToken(jwt) && jwtCacheService.getCachedJwt(username) != null) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
-                usernamePasswordAuthenticationToken
-                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
         }
