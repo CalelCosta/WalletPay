@@ -14,8 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import recargapay.wallet.application.dto.request.CreateWalletRequestDTO;
+import recargapay.wallet.application.dto.request.DepositRequestDTO;
 import recargapay.wallet.application.dto.response.*;
 import recargapay.wallet.domain.usecase.CreateWalletUseCase;
+import recargapay.wallet.domain.usecase.DepositUseCase;
 import recargapay.wallet.domain.usecase.GetBalanceUseCase;
 
 @OpenAPIDefinition(
@@ -27,10 +29,12 @@ public class WalletController {
 
     private final CreateWalletUseCase createWalletUseCase;
     private final GetBalanceUseCase getBalanceUseCase;
+    private final DepositUseCase depositUseCase;
 
-    public WalletController(CreateWalletUseCase createWalletUseCase, GetBalanceUseCase getBalanceUseCase) {
+    public WalletController(CreateWalletUseCase createWalletUseCase, GetBalanceUseCase getBalanceUseCase, DepositUseCase depositUseCase) {
         this.createWalletUseCase = createWalletUseCase;
         this.getBalanceUseCase = getBalanceUseCase;
+        this.depositUseCase = depositUseCase;
     }
 
     @Operation(summary = "Create a Wallet", description = "Endpoint for creating a new digital wallet for the user.")
@@ -64,18 +68,28 @@ public class WalletController {
         return ResponseEntity.ok(getBalanceUseCase.getBalance(pageable, userId, date));
     }
 
-    @PostMapping("/{userId}/deposit")
-    public ResponseEntity<DepositResponseDTO> createDeposit(@PathVariable Long userId) {
+    @Operation(summary = "Makes a Deposit", description = "Endpoint for make a deposit.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "OK",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = DepositResponseDTO.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid Input Data",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDTO.class)) })
+    })
+    @PostMapping("/deposit")
+    public ResponseEntity<DepositResponseDTO> createDeposit(@Valid @RequestBody DepositRequestDTO depositRequestDTO) {
+        depositUseCase.execute(depositRequestDTO);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
+    @PostMapping("/withdraw")
+    public ResponseEntity<WithdrawResponseDTO> withdrawMoney() {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/{userId}/withdraw")
-    public ResponseEntity<WithdrawResponseDTO> withdrawMoney(@PathVariable Long userId) {
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    @PostMapping("/{fromId}/transfer/{toId}")
-    public ResponseEntity<TransferResponseDTO> transferMoney(@PathVariable Long fromId, @PathVariable Long toId) {
+    @PostMapping("/transfer")
+    public ResponseEntity<TransferResponseDTO> transferMoney() {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
