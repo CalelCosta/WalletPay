@@ -22,16 +22,12 @@ public class JwtKeyGenerator implements EnvironmentPostProcessor {
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-        // Verifica se já existe a propriedade na linha de comando ou nas variáveis de ambiente
         String secret = System.getProperty(ENV_VAR_NAME);
         if (secret == null || secret.isEmpty()) {
-            // Se não estiver definida, gera uma chave segura
             SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
             secret = Base64.getEncoder().encodeToString(key.getEncoded());
-            // Opcional: também definir em System properties, se necessário
             System.setProperty(ENV_VAR_NAME, secret);
         }
-        // Adiciona a propriedade "jwt.secret" no início da cadeia de PropertySources
         environment.getPropertySources().addFirst(new MapPropertySource("jwtSecret",
                 Collections.singletonMap(PROPERTY_NAME, secret)));
     }

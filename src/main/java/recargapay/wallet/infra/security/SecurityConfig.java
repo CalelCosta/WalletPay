@@ -43,15 +43,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // Desabilita CSRF
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/authenticate").permitAll() // Permite acesso público ao endpoint de autenticação
-                        .requestMatchers("/admin/**").hasRole("ADMIN") // Apenas usuários com ROLE_ADMIN podem acessar rotas /admin/**
-                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN") // Usuários com ROLE_USER ou ROLE_ADMIN podem acessar rotas /user/**
-                        .anyRequest().authenticated() // Exige autenticação para todos os outros endpoints
+                        .requestMatchers("/authenticate").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Configura sessões como stateless
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .addFilterBefore(new JwtRequestFilter(jwtUtil, jwtCacheService, userDetailsService), UsernamePasswordAuthenticationFilter.class); // Adiciona o filtro JWT
 

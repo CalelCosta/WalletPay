@@ -17,13 +17,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Aqui você buscaria o usuário no banco de dados
         if ("admin".equals(username)) {
             return new User("admin", passwordEncoder().encode("admin123"), Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN")));
         } else if ("user".equals(username)) {
             return new User("user", passwordEncoder().encode("user123"), Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
         } else {
-            throw new UsernameNotFoundException("Usuário não encontrado: " + username);
+            throw new UsernameNotFoundException("User Not Found: " + username);
         }
     }
 

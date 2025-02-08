@@ -18,8 +18,6 @@ import recargapay.wallet.application.dto.response.*;
 import recargapay.wallet.domain.usecase.CreateWalletUseCase;
 import recargapay.wallet.domain.usecase.GetBalanceUseCase;
 
-import java.time.LocalDate;
-
 @OpenAPIDefinition(
         info = @Info(title = "Wallet Service API", version = "1.0", description = "API for digital wallet management")
 )
