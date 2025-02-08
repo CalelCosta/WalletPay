@@ -8,8 +8,6 @@ import recargapay.wallet.application.dto.response.WalletResponseDTO;
 import recargapay.wallet.infra.model.User;
 import recargapay.wallet.infra.model.Wallet;
 
-import java.time.LocalDate;
-
 public interface WalletService {
 
     WalletResponseDTO createWallet(CreateWalletRequestDTO createWalletRequestDTO, User user);

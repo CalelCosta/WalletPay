@@ -18,6 +18,8 @@ import recargapay.wallet.application.dto.response.*;
 import recargapay.wallet.domain.usecase.CreateWalletUseCase;
 import recargapay.wallet.domain.usecase.GetBalanceUseCase;
 
+import java.time.LocalDate;
+
 @OpenAPIDefinition(
         info = @Info(title = "Wallet Service API", version = "1.0", description = "API for digital wallet management")
 )
@@ -47,10 +49,20 @@ public class WalletController {
         return new ResponseEntity<>(createWalletUseCase.createWallet(walletRequestDTO), HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Consult Wallet Balance", description = "Endpoint for consulting User wallet balance.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BalanceResponseDTO.class)) }),
+            @ApiResponse(responseCode = "404", description = "Invalid Input Data",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDTO.class)) })
+    })
     @GetMapping("/{userId}/balance")
     public ResponseEntity<Page<BalanceResponseDTO>> getBalance(Pageable pageable,
                                                @PathVariable Long userId,
-                                               @RequestParam(name = "date", required = false) String date) {
+                                               @RequestParam(name = "date", required = false
+                                                       , defaultValue = "2099-12-31") String date) {
         return ResponseEntity.ok(getBalanceUseCase.getBalance(pageable, userId, date));
     }
 

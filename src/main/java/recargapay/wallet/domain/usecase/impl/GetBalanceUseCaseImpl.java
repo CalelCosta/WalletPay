@@ -1,6 +1,7 @@
 package recargapay.wallet.domain.usecase.impl;
 
 import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,9 +32,10 @@ public class GetBalanceUseCaseImpl implements GetBalanceUseCase {
 
     @Override
     @Transactional
+    @Cacheable(value = "getBalance", keyGenerator = "keyGenerator", unless = "#result == null")
     public Page<BalanceResponseDTO> getBalance(Pageable pageable, Long userId, String date) {
         Optional<Wallet> result = userRepository.findById(Math.toIntExact(userId)).map(User::getWallet);
-        if (result.isPresent() && date == null || date.isEmpty()) {
+        if (result.isPresent() && date.equals("2099-12-31")) {
             date = LocalDate.now().toString();
             return walletService.getAllBalanceWithCurrentDate(pageable, result.get(), date);
         } else if (date.matches(DATE_PATTERN)) {
