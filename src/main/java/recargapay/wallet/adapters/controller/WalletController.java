@@ -84,7 +84,8 @@ public class WalletController {
     @PostMapping("/deposit")
     public ResponseEntity<DepositResponseDTO> createDeposit(@Valid @RequestBody DepositRequestDTO depositRequestDTO) {
         depositUseCase.execute(depositRequestDTO);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(new DepositResponseDTO("deposit successfully completed", depositRequestDTO.getAmount()));
     }
 
     @Operation(summary = "Makes a Withdraw", description = "Endpoint for make a withdraw.")
@@ -99,7 +100,8 @@ public class WalletController {
     @PostMapping("/withdraw")
     public ResponseEntity<WithdrawResponseDTO> withdrawMoney(@Valid @RequestBody WithdrawRequestDTO withdrawRequestDTO) {
         withdrawUseCase.execute(withdrawRequestDTO);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(new WithdrawResponseDTO("successful withdrawal", withdrawRequestDTO.getAmount()));
     }
 
     @Operation(summary = "Makes a Transfer", description = "Endpoint for make a money transfer.")
@@ -114,6 +116,11 @@ public class WalletController {
     @PostMapping("/transfer")
     public ResponseEntity<TransferResponseDTO> transferMoney(@Valid @RequestBody TransferRequestDTO transferRequestDTO) {
         transferUseCase.execute(transferRequestDTO);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(new TransferResponseDTO("transafer performed successfully",
+                transferRequestDTO.getFromCpf(),
+                transferRequestDTO.getToCpf(),
+                transferRequestDTO.getAmount()
+                ));
     }
 }

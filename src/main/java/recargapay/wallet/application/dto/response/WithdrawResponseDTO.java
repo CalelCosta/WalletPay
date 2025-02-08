@@ -1,4 +1,6 @@
 package recargapay.wallet.application.dto.response;
 
-public record WithdrawResponseDTO(String message, Double amount) {
+import java.math.BigDecimal;
+
+public record WithdrawResponseDTO(String message, BigDecimal amount) {
 }

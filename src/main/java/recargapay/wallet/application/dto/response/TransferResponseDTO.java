@@ -1,4 +1,6 @@
 package recargapay.wallet.application.dto.response;
 
-public record TransferResponseDTO(String message, String sender, String receiver, Double amount) {
+import java.math.BigDecimal;
+
+public record TransferResponseDTO(String message, String sender, String receiver, BigDecimal amount) {
 }
