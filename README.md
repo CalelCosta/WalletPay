@@ -89,12 +89,13 @@ The project includes unit and integration tests to ensure code quality. To run t
 The project was developed in 3 days, and while it was possible to deliver a functional and robust solution, some improvements could be implemented with more time:
 1. Increase unit test coverage:
 - Add more test scenarios to cover edge cases and ensure greater reliability.
-2. Add JWT user verification:
+2. Add JWT user verification and adjust route access:
 - Implement more robust JWT token validation to ensure only authenticated users can access specific resources.
 3. Enhance observability with Grafana or Spring Actuator:
 - Integrate monitoring tools like Grafana or Spring Actuator to improve system visibility and facilitate issue identification.
 4. Add more error handling for specific cases:
 - Implement more detailed error handling for scenarios such as database connection failures, timeouts in external calls, etc.
+5. Adjust
 
 ## 🧪 How to Test
 Here are example payloads to test the API endpoints:
@@ -149,3 +150,15 @@ User 2:
     "amount": 50
 }
 ````
+## 📚 API Documentation
+After starting the project, you can access the API documentation using Swagger:
+
+### Swagger UI
+* URL: http://localhost:8080/swagger-ui.html
+
+* Description: Interactive API documentation where you can test endpoints directly from your browser.
+
+### OpenAPI Specification
+* URL: http://localhost:8080/v3/api-docs
+
+* Description: Raw OpenAPI specification in JSON format.
