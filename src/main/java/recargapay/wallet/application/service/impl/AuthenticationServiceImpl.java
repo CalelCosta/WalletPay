@@ -26,7 +26,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final UserDetailsService userDetailsService;
 
-    @Value("${jwt.expiration}")
+    @Value("${jwt.expiration:3600}")
     private Long expiration;
 
     public AuthenticationServiceImpl(AuthenticationManager authenticationManager, JwtUtil jwtUtil, JwtCacheService jwtCacheService, UserDetailsService userDetailsService) {
@@ -49,6 +49,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         log.info("JWT generated");
 
-        return ResponseEntity.ok(new AuthenticationResponseDTO(jwt, "Bearer", expiration.intValue()));
+        int expirationSeconds = expiration != null ? expiration.intValue() : 3600;
+
+        return ResponseEntity.ok(new AuthenticationResponseDTO(jwt, "Bearer", expirationSeconds));
     }
 }
