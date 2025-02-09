@@ -1,5 +1,7 @@
 package recargapay.wallet.adapters.controller;
 
+import io.github.resilience4j.ratelimiter.RequestNotPermitted;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -51,6 +53,7 @@ public class WalletController {
                     schema = @Schema(implementation = ErrorResponseDTO.class)) })
     })
     @PostMapping
+    @RateLimiter(name = "walletService", fallbackMethod = "rateLimitFallback")
     public ResponseEntity<WalletResponseDTO> createWallet(@Valid @RequestBody CreateWalletRequestDTO walletRequestDTO) {
         return new ResponseEntity<>(createWalletUseCase.createWallet(walletRequestDTO), HttpStatus.CREATED);
     }
@@ -82,6 +85,7 @@ public class WalletController {
                             schema = @Schema(implementation = ErrorResponseDTO.class)) })
     })
     @PostMapping("/deposit")
+    @RateLimiter(name = "depositService", fallbackMethod = "rateLimitFallback")
     public ResponseEntity<DepositResponseDTO> createDeposit(@Valid @RequestBody DepositRequestDTO depositRequestDTO) {
         depositUseCase.execute(depositRequestDTO);
         return ResponseEntity.status(HttpStatus.ACCEPTED)
@@ -98,6 +102,7 @@ public class WalletController {
                             schema = @Schema(implementation = ErrorResponseDTO.class)) })
     })
     @PostMapping("/withdraw")
+    @RateLimiter(name = "withDrawService", fallbackMethod = "rateLimitFallback")
     public ResponseEntity<WithdrawResponseDTO> withdrawMoney(@Valid @RequestBody WithdrawRequestDTO withdrawRequestDTO) {
         withdrawUseCase.execute(withdrawRequestDTO);
         return ResponseEntity.status(HttpStatus.ACCEPTED)
@@ -114,6 +119,7 @@ public class WalletController {
                             schema = @Schema(implementation = ErrorResponseDTO.class)) })
     })
     @PostMapping("/transfer")
+    @RateLimiter(name = "transferService", fallbackMethod = "rateLimitFallback")
     public ResponseEntity<TransferResponseDTO> transferMoney(@Valid @RequestBody TransferRequestDTO transferRequestDTO) {
         transferUseCase.execute(transferRequestDTO);
         return ResponseEntity.status(HttpStatus.ACCEPTED)
@@ -122,5 +128,10 @@ public class WalletController {
                 transferRequestDTO.getToCpf(),
                 transferRequestDTO.getAmount()
                 ));
+    }
+
+    private ResponseEntity<String> rateLimitFallback(Object dto, RequestNotPermitted ex) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .body("Many requests - please try again later.");
     }
 }
